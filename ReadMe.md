@@ -1,7 +1,7 @@
 ## Interview test task implementation
 
 ### Pre-build
-You need Maven to build and launch this application
+You need Maven to build and launch this application.
 Before building a project pls install **WolframAlpha-1.1.jar** from the root of the project as maven plugin with groupId, artifactId and version as follows
 
 ```sh
