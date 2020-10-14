@@ -1,0 +1,77 @@
+<html>
+  <body>
+    <style>
+      body {
+        padding: 20px;
+      }
+      .row {
+        margin: 10px;
+      }
+      textarea {
+        width: 350px;
+        height: 100px;
+      }
+      input {
+        margin: 5px;
+      }
+      button {
+        margin: 5px;
+        padding: 10px;
+      }
+    </style>
+    <div class="row">
+      <div>Function</div>
+      <textarea id="expr"></textarea>
+    </div>
+    <div class="row"><span>Plot range</span><input id="from" type="number" value="0" /><input id="to" type="number" value="0" /></div>
+    <div class="row">
+      <input type="radio" name="parser" value="native" checked /><span>Native parser</span>
+      <input type="radio" name="parser" value="wolfram" /><span>Wolfram alpha parser</span>
+    </div>
+    <div class="row">
+      <input id="realAxis" type="checkbox" /><span>real axis scale</span>&nbsp;
+      <button type="button" id="plot" onclick="javascript:plot()">Plot</button></div>
+    <div class="row"><img id="graphic" style="display: none" src="" /></div>
+    <script type="text/javascript">
+      function parser() {
+        var radios = document.getElementsByName('parser');
+        for (var i = 0, length = radios.length; i < length; i++) {
+          if (radios[i].checked) {
+            return radios[i].value;
+          }
+        }
+      }
+
+      function plot() {
+        document.getElementById("plot").disabled = true;
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function() {
+          var img = document.getElementById("graphic");
+          img.style.display = "none";
+          if (req.readyState == XMLHttpRequest.DONE) {
+            if (req.status == 200) {
+              img.src = req.responseText;
+              img.style.display = "block";
+            } else if (req.status == 400) {
+              alert('There was an error 400');
+            } else {
+              alert(req.responseText);
+            }
+            document.getElementById("plot").disabled = false;
+          }
+        };
+
+        req.open("POST", "/", true);
+        req.setRequestHeader('Content-type', 'application/json');
+        var data = {
+          expr: document.getElementById("expr").value,
+          from: document.getElementById("from").value,
+          to: document.getElementById("to").value,
+          parser: parser(),
+          realAxis: document.getElementById("realAxis").checked
+        };        
+        req.send(JSON.stringify(data));
+      }
+    </script>
+  </body>
+</html>

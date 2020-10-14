@@ -1,4 +1,4 @@
-package rollbyte
+package rollbyte.jfx
 
 import javafx.scene.paint.Color
 import javafx.scene.paint.CycleMethod
