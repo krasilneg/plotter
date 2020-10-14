@@ -13,12 +13,16 @@ class Wolfram(appId: String) {
     engine.appID = appId
   }
 
-  fun plot(expression: String, from: Double, to: Double): String { 
-    val q = engine.createQuery("plot " + expression + " from x=" + from + " to " + to)
+  fun plot(expression: String, from: Double, to: Double, real: Boolean = false): String { 
+    val cmd = if (real) "real plot" else "plot"
+    val q = engine.createQuery("$cmd " + expression + " from x=" + from + " to " + to)
     q.addIncludePodID("Plot")
     q.addFormat("image")
     //q.addFormat("moutput")
     val res = engine.performQuery(q)
+    if (res.numPods == 0) {
+      throw Exception("No result pods obtained from API. Check your input or try later.")
+    }
     return (res.pods[0].subpods[0].contents[0] as WAImage).getURL()
   }
 }
